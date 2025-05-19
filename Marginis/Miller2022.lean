@@ -118,18 +118,6 @@ def turing_functional (f : List Bool → ℕ → Part Bool) : Prop := by
 def turingReducible (A B : ℕ → Bool) : Prop :=
   ∃ φ, turingFunctional φ ∧ ∀ n, ∃ k, φ ⟨k, fun a : Fin k => B a⟩ n = A n
 
--- theorem tRefl : Reflexive turingReducible := by
---   intro A
---   use (fun p n => dite (n < p.1) (fun h => p.2 ⟨n, h⟩) (fun h => Part.none))
---   constructor
---   · constructor
---     · simp
---       unfold Partrec₂
---       unfold Partrec
-
---       sorry
---     · sorry
---   · sorry
 
 
 def turing_reducible (A B : ℕ → Bool) : Prop :=
