@@ -1,7 +1,7 @@
--- import Mathlib.Topology.Defs.Basic
--- import Mathlib.Topology.Homeomorph
--- import Mathlib.Algebra.CharP.Two
-import Mathlib
+import Mathlib.Algebra.CharP.Basic
+import Mathlib.Algebra.CharP.Two
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Homeomorph.Defs
 /-!
 
 # Preface to the special issue for The Fifth Workshop on Formal Topology
@@ -111,7 +111,6 @@ def mytop (z : Fin 2): TopologicalSpace (Fin 2) :=
           |inr h => subst h;simp
   isOpen_sUnion := by
     intro S hS
-    simp at hS
     by_cases H₀ : Set.univ ∈ S
     . right;left;refine Set.sUnion_eq_univ_iff.mpr ?_;
       intro a;exists Set.univ
@@ -182,4 +181,3 @@ def myhomeo := @Homeomorph.mk (Fin 2) (Fin 2) (mytop 0) (mytop 1) myequiv (by
         | inr h₀ => subst h₀;rfl
       . intro h; subst h;rfl
 )
-#min_imports
