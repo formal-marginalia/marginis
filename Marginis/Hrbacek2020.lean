@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2025 Bjørn Kjos-Hanssen. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Bjørn Kjos-Hanssen, Janitha Aswedige
+-/
 import Mathlib.Algebra.Order.Ring.Star
 import Mathlib.Analysis.Normed.Ring.Lemmas
 import Mathlib.Data.Int.Star
@@ -181,3 +186,155 @@ lemma dickson_dvd {ℓ : ℕ} (a b: Fin ℓ → ℕ) (hb : ∀ i, b i ≥ 1)
     rw [ha i] at Q
     simp at Q
     exact Q
+
+/-!
+
+# Janitha Aswedige's part
+-/
+
+lemma Div_by_3 (m : ℕ) : 3 ∣ (1 - (-2)^m) := by
+  induction' m with m ih
+  ring_nf
+  omega
+  rw [pow_succ]
+  have D11 : 1 - (-2) ^ m * -2 = 1 - (-2)^m + 3 * (-2)^m := by ring
+  obtain ⟨k, hk⟩ := ih
+  rw [hk] at D11
+  rw [D11]
+  omega
+
+lemma help (m : ℕ) : 2 ^ m / (-2) ^ m = (-1)^m := by
+  induction m with
+  |zero =>
+  simp
+  |succ m ih =>
+  rw [pow_succ, pow_succ, pow_succ]
+  field_simp
+  exact ih
+
+--Definition 2.
+--The anchor function for a prime p and a natural number n is defined.
+
+/-- Anchor function definition.
+For p > 2: s(p, n) = (p^n + 1)/2
+For p = 2: s(p, n) = (1 - (-2)^n)/3 -/
+def s : ℕ → ℕ → ℤ
+  | p, n =>
+    if p > 2 then
+      (p^n + 1) / 2
+    else if p = 2 then
+      (1 - (-2)^n) / 3
+    else
+      0
+
+--Lemma 3.
+lemma anchor (p m n : ℕ) (hp : Nat.Prime p) (hmn : m < n) : s p n ≡ s p m [ZMOD p^m] := by
+  have : p = 2 ∨ p > 2 := by
+    refine LE.le.eq_or_gt ?_
+    exact Nat.Prime.two_le hp
+  rcases this with H|H
+  simp only [s]
+  split_ifs with h1
+  exfalso
+  linarith
+  rw [H]
+  refine Int.modEq_iff_dvd.mpr ?_
+  zify
+  have D1 : 3 ∣ (1 - (-2)^m) := by
+    apply Div_by_3
+  have D2 : 3 ∣ (1 - (-2)^n) := by
+    apply Div_by_3
+  have H1 : (1 - (-2) ^ m) / 3 - (1 - (-2) ^ n) / 3 = ((-2)^n - (-2)^m) / 3 := by omega
+  have H2 : ((-2)^n - (-2)^m) / 3 = (-2)^m * (((-2)^(n - m) - 1) / 3) := by
+    have : (-2) ^ m * (((-2) ^ (n - m) - 1) / 3) = ((-2) ^ m * (((-2) ^ (n - m) - 1))) / 3 := by
+      refine Eq.symm (Int.mul_ediv_assoc ((-2) ^ m) ?_)
+      have : 3 ∣ 1 - (-2) ^ (n - m) := by
+        apply Div_by_3
+      omega
+    rw [this]
+    rw [mul_sub]
+    rw [←pow_add]
+    have : m + (n - m) = n := by omega
+    rw [this]
+    rw [mul_one]
+  rw [H1, H2]
+  refine Int.dvd_mul_of_div_dvd ?_ ?_
+  refine pow_dvd_pow_of_dvd ?_ m
+  norm_num
+  have H3 : 2 ^ m / (-2) ^ m = (-1)^m := by apply help
+  rw [H3]
+  have H4 : 3 ∣ ((-2) ^ (n - m) - 1) := by
+    have : 3 ∣ (1 - (-2)^(n - m)) := by
+      apply Div_by_3
+    omega
+  obtain ⟨k, hk⟩ := H4
+  rw [hk]
+  have : (3 * k) / 3 = k := by omega
+  rw [this]
+  have H5 : (-1)^m = -1 ∨ (-1)^m = 1 := by
+    have cases : Even m ∨ Odd m := by exact Nat.even_or_odd m
+    rcases cases with L|L
+    right
+    exact Even.neg_one_pow L
+    left
+    exact Odd.neg_one_pow L
+  rcases H5 with J|J
+  rw [J]
+  refine Int.neg_dvd.mpr ?_
+  omega
+  rw [J]
+  omega
+  simp only [s]
+  split_ifs
+  refine Int.ModEq.symm ((fun {n a b} ↦ Int.modEq_iff_dvd.mpr) ?_)
+  have h1 : ((p : ℤ) ^ n + 1) / 2 - ((p : ℤ) ^ m + 1) / 2 = ((p : ℤ) ^ n - (p : ℤ) ^ m) / 2 := by
+    have h11 : 2 ∣ ((p : ℤ) ^ n + 1) := by
+      have : Even (((p : ℤ) ^ n + 1)) := by
+        refine Odd.add_one ?_
+        refine Odd.pow ?_
+        norm_cast
+        by_contra h
+        have : Even p := by exact Nat.not_odd_iff_even.mp h
+        have : p = 2 := by exact (Nat.Prime.even_iff hp).mp this
+        omega
+      exact even_iff_two_dvd.mp this
+    have h12 : 2 ∣ ((p : ℤ) ^ m + 1) := by
+      have : Even (((p : ℤ) ^ m + 1)) := by
+        refine Odd.add_one ?_
+        refine Odd.pow ?_
+        norm_cast
+        by_contra h
+        have : Even p := by exact Nat.not_odd_iff_even.mp h
+        have : p = 2 := by exact (Nat.Prime.even_iff hp).mp this
+        omega
+      exact even_iff_two_dvd.mp this
+    omega
+  rw [h1]
+  have h2 : p^n = p^m * p^(n - m) := by
+    refine Eq.symm (pow_mul_pow_sub ↑p ?_)
+    linarith
+  zify at h2
+  rw [h2]
+  use (p^(n - m) - 1) / 2
+  rw [← pow_add, ← Nat.add_sub_of_le hmn]
+  have h11 : m + (m.succ + (n - m.succ) - m) = n := by omega
+  have h22 : m.succ + (n - m.succ) - m = n - m := by omega
+  rw [h11, h22]
+  have h33 : (p : ℤ) ^ m * (((p : ℤ) ^ (n - m) - 1) / 2) =  ((p : ℤ) ^ m * ((p : ℤ) ^ (n - m) - 1)) / 2 := by
+    refine Eq.symm (Int.mul_ediv_assoc (↑p ^ m) ?_)
+    have h331 : Odd (p^(n - m)) := by
+      refine Odd.pow ?_
+      by_contra h
+      have : Even p := by exact Nat.not_odd_iff_even.mp h
+      have : p = 2 := by exact (Nat.Prime.even_iff hp).mp this
+      omega
+    obtain ⟨l, hl⟩ := h331
+    zify at *
+    rw [hl]
+    omega
+  rw [h33]
+  rw [mul_sub]
+  rw [← pow_add]
+  have : m + (n - m) = n := by omega
+  rw [this]
+  rw [mul_one]
