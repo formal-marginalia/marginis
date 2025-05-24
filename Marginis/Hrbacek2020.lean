@@ -6,6 +6,7 @@ Authors: Bjørn Kjos-Hanssen, Janitha Aswedige
 import Mathlib.Algebra.Order.Ring.Star
 import Mathlib.Analysis.Normed.Ring.Lemmas
 import Mathlib.Data.Int.Star
+import Mathlib.NumberTheory.SmoothNumbers
 /-!
 
 # On factoring of unlimited integers
@@ -338,3 +339,147 @@ lemma anchor (p m n : ℕ) (hp : Nat.Prime p) (hmn : m < n) : s p n ≡ s p m [Z
   have : m + (n - m) = n := by omega
   rw [this]
   rw [mul_one]
+
+
+lemma anchor_trivial (p m n : ℕ) (hmn : m = n) : s p n ≡ s p m [ZMOD p^m] := by
+  rw [hmn]
+
+lemma anchor_leq (p m n : ℕ) (hp : Nat.Prime p) (hmn : m ≤ n) : s p n ≡ s p m [ZMOD p^m] := by
+  have : m < n ∨ m = n := by omega
+  rcases this with H|H
+  apply anchor
+  exact hp
+  exact H
+  apply anchor_trivial
+  exact H
+
+-- Highest exponent function for the anchor s.
+noncomputable def n_p : ℕ → ℤ → ℕ
+  | p, x => sSup { n : ℕ | x ≡ s p n [ZMOD p^n] }
+
+--An anchor is ***admissible*** if np(p,x) exists for all primes p and integers x.
+
+--Next result : s is an admissible anchor.
+
+/- lemma admissible_s : ∀ p : ℕ, ∀ x : ℤ, p.Prime → (∃ r : ℕ, n_p p x = r) := by
+  sorry -/
+
+/-lemma n_pEventuallyZero (p : ℕ) (x : ℤ) (hp : p.Prime) (hpx : p > 2 * x.natAbs + 1) : n_p p x = 0 := by
+  -- Unfold the definition of n_p
+  simp only [n_p]
+  by_contra h
+  push_neg at h
+  have H : sSup {n | x ≡ s p n [ZMOD ↑p ^ n]} ≥ 1 := by omega
+  sorry-/
+
+noncomputable def a : ℤ → ℕ
+  | x => ∏ p ∈ (Nat.primesBelow (2 * x.natAbs + 1)), p^(n_p p x)
+
+/- noncomputable def a : ℤ → ℕ
+  | x => ∏ p ∈ (Nat.primesBelow ((2 * x.natAbs + 1))), p^(n_p p x) -/
+
+--In the following lemma we assume that the anchor function defined above is admissible (See Hx and Hy).
+--This proves a weak version of a claim made by the author in the proof of Lemma 5.
+lemma CWeak (x y : ℤ) (p : ℕ) (hp : p.Prime) (hpx : p ∣ a x) (hpy : p ∣ a y)
+ (Hx : x ≡ s p (n_p p x) [ZMOD p^(n_p p x)])  (Hy : y ≡ s p (n_p p y) [ZMOD p^(n_p p y)]):
+    (p : ℤ) ∣ y - x := by
+      have H00 : n_p p x ≥ 1 := by
+        by_contra h
+        have h0 : n_p p x = 0 := by omega
+        have h1 : ¬ p ∣ a x := by
+          apply Prime.not_dvd_finset_prod
+          exact Nat.prime_iff.mp hp
+          intros b H
+          by_contra H1
+          have H2 : b = p := by
+            have H21 : p ∣ b := by
+              exact Nat.Prime.dvd_of_dvd_pow hp H1
+            have H22 : b.Prime := by exact Nat.prime_of_mem_primesBelow H
+            have H23 : p = 1 ∨ p = b := by exact (Nat.dvd_prime H22).mp H21
+            have H24 : p ≠ 1 := by exact Nat.Prime.ne_one hp
+            have H25 : p = b := by tauto
+            exact id (Eq.symm H25)
+          rw [H2] at H1
+          rw [h0] at H1
+          ring_nf at H1
+          subst H2
+          simp_all only [pow_zero, ge_iff_le, nonpos_iff_eq_zero, one_ne_zero, not_false_eq_true, Nat.dvd_one,
+            isUnit_iff_eq_one, IsUnit.dvd, Nat.cast_one, one_pow, le_add_iff_nonneg_left, zero_le]
+          subst H1
+          have fwd : False := Nat.prime_one_false hp
+          clear hp
+          simp_all only
+        contradiction
+      have H01 : n_p p y ≥ 1 := by
+        by_contra h
+        have h0 : n_p p y = 0 := by omega
+        have h1 : ¬ p ∣ a y := by
+          apply Prime.not_dvd_finset_prod
+          exact Nat.prime_iff.mp hp
+          intros b H
+          by_contra H1
+          have H2 : b = p := by
+            have H21 : p ∣ b := by
+              exact Nat.Prime.dvd_of_dvd_pow hp H1
+            have H22 : b.Prime := by exact Nat.prime_of_mem_primesBelow H
+            have H23 : p = 1 ∨ p = b := by exact (Nat.dvd_prime H22).mp H21
+            have H24 : p ≠ 1 := by exact Nat.Prime.ne_one hp
+            have H25 : p = b := by tauto
+            exact id (Eq.symm H25)
+          rw [H2] at H1
+          rw [h0] at H1
+          ring_nf at H1
+          subst H2
+          simp_all only [pow_zero, ge_iff_le, nonpos_iff_eq_zero, one_ne_zero, not_false_eq_true, Nat.dvd_one,
+            isUnit_iff_eq_one, IsUnit.dvd, Nat.cast_one, one_pow, le_add_iff_nonneg_left, zero_le]
+          subst H1
+          have fwd : False := Nat.prime_one_false hp
+          clear hp
+          simp_all only
+        contradiction
+      have H0 : x ≡ s p (n_p p x) [ZMOD p^(n_p p x)] := by exact Hx
+      have H1 : y ≡ s p (n_p p y) [ZMOD p^(n_p p y)] := by exact Hy
+      have H2 : s p (n_p p x) ≡ s p 1 [ZMOD p^1] := by
+        have : 1 ≤ n_p p x := H00
+        apply anchor_leq p 1 (n_p p x)
+        exact hp
+        exact this
+      have H3 : s p (n_p p y) ≡ s p 1 [ZMOD p^1] := by
+        have : 1 ≤ n_p p y := H01
+        apply anchor_leq p 1 (n_p p y)
+        exact hp
+        exact this
+      simp at *
+      have H4 : (p^(n_p p x) : ℤ ) ∣ x - s p (n_p p x):= by
+        exact Int.ModEq.dvd (id (Int.ModEq.symm Hx))
+      have H5 : (p : ℤ) ∣ (p^(n_p p x) : ℤ) := by
+        refine Dvd.dvd.pow ?_ ?_
+        exact Int.dvd_refl ↑p
+        omega
+      have H6 : (p : ℤ) ∣ x - s p (n_p p x) := by
+        exact Int.dvd_trans H5 H4
+      have H7 : x - s p (n_p p x) ≡ 0 [ZMOD p] := by
+        exact Dvd.dvd.modEq_zero_int H6
+      have H8 : x ≡ s p (n_p p x) [ZMOD p] := by
+        exact Int.ModEq.of_dvd H5 Hx
+      have H41 : (p^(n_p p y) : ℤ ) ∣ y - s p (n_p p y):= by
+        exact Int.ModEq.dvd (id (Int.ModEq.symm Hy))
+      have H51 : (p : ℤ) ∣ (p^(n_p p y) : ℤ) := by
+        refine Dvd.dvd.pow ?_ ?_
+        exact Int.dvd_refl ↑p
+        omega
+      have H61 : (p : ℤ) ∣ y - s p (n_p p y) := by
+        exact Int.dvd_trans H51 H41
+      have H71 : y - s p (n_p p y) ≡ 0 [ZMOD p] := by
+        exact Dvd.dvd.modEq_zero_int H61
+      have H81 : y ≡ s p (n_p p y) [ZMOD p] := by
+        exact Int.ModEq.of_dvd H51 Hy
+      have H9 : y ≡ s p 1 [ZMOD p] := by
+        exact Int.ModEq.trans H81 H3
+      have H10 : x ≡ s p 1 [ZMOD p] := by
+        exact Int.ModEq.trans H8 H2
+      have H11 : y ≡ x [ZMOD p] := by
+        exact Int.ModEq.trans H9 (id (Int.ModEq.symm H10))
+      exact Int.ModEq.dvd (id (Int.ModEq.symm H11))
+
+--We must be able to modify this proof to prove the actual lemma of the paper....
