@@ -22,6 +22,8 @@ Here we prove a scheme formalizing the Heine-Borel Theorem for subsets of [0,1] 
 
 open Bornology
 
+namespace HirstMiller
+
 /-- show that an interval is bounded -/
 lemma bounded_icc {r_c : ℝ} : IsBounded {r | 0 ≤ r ∧ r ≤ r_c} := by
   exact Metric.isBounded_Icc 0 r_c
@@ -129,3 +131,5 @@ lemma Y_dense (Y : Set ℝ) (hY : Y ≠ ∅ ∧ Countable ↑Y ∧ Preperfect Y 
     rw [this] at hx
     exact h hx
   exact hY.1 this
+
+end HirstMiller
