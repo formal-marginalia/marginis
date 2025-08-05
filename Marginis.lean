@@ -30,9 +30,7 @@ import Marginis.Dow2016
 import Marginis.EagleLau2024
 import Marginis.Editors2018
 import Marginis.Ehrlich2011
-import Marginis.FinancialMathematics
 import Marginis.FranklinMcNicholl2020
-import Marginis.Geometry
 import Marginis.Goldbring2011
 import Marginis.Green2013
 import Marginis.GrubmullerPetrakis2025
@@ -47,12 +45,9 @@ import Marginis.Jekel2023
 import Marginis.JonesSpeisegger2012
 import Marginis.Kawai2019
 import Marginis.KjosHanssen2010
-import Marginis.LatticeTable
 import Marginis.Lubarsky2010
 import Marginis.Miller2022
 import Marginis.MiyabeNiesStephan2018
-import Marginis.NYC2ndDeriv
-import Marginis.NYCStats
 import Marginis.NeriPowell2023
 import Marginis.Opris2023
 import Marginis.Pathak2009
@@ -61,8 +56,6 @@ import Marginis.PaulyZiegler2013
 import Marginis.Petrakis2019
 import Marginis.RamirezVellis2024
 import Marginis.Ross2025
-import Marginis.Subdirect
-import Marginis.SubdirectNotSimple
 import Marginis.Swan2016
 import Marginis.Todorov2021
 import Marginis.VanDenBerg2013
@@ -72,4 +65,3 @@ import Marginis.Vickers2019
 import Marginis.Weisshaupt2009
 import Marginis.Zlatos2021
 import Marginis.manyOne
-import Marginis.«Geometry copy»
