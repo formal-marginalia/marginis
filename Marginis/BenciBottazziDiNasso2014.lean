@@ -24,9 +24,7 @@ lemma size_empty {B : Type} [Fintype B] : size (B := B) ∅ = 0 := by
 /-- The cardinality of Bool, as a hyperreal. -/
 lemma size_univ : size (Finset.univ : Finset Bool) = 2 := by
   unfold size
-  simp only [Fintype.univ_bool, Finset.mem_singleton, Bool.true_eq_false, not_false_eq_true,
-    Finset.card_insert_of_not_mem, Finset.card_singleton, Nat.reduceAdd, Nat.cast_ofNat,
-    Hyperreal.coe_ofNat]
+  simp
 
 /-- The cardinality of a singleton, as a hyperreal. -/
 lemma size_single {B : Type} [Fintype B] (b : B) : size {b} = 1 := by

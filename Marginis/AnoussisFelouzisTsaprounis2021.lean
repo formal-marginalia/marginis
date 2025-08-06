@@ -15,5 +15,5 @@ theorem not_regular_nat {n : ℕ} : ¬ Cardinal.IsRegular n := by
   have h₁ : (n : Cardinal.{u_1}) < Cardinal.aleph0 := by
     refine Cardinal.lt_aleph0.mpr ?_
     use n
-  have h₂ : (n : Cardinal.{u_1}) < (n : Cardinal.{u_1}) := gt_of_ge_of_gt h₀ h₁
+  have h₂ : (n : Cardinal.{u_1}) < (n : Cardinal.{u_1}) := Cardinal.IsRegular.nat_lt h n
   aesop
