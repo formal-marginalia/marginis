@@ -20,7 +20,7 @@ inductive veldman
 | ii : veldman → veldman
 open veldman
 
-lemma iii (x : veldman) : ∃ y, x = i y ∨ x = ii y := by
+lemma iii' (x : veldman) : ∃ y, x = i y ∨ x = ii y := by
   cases x with
   | i y => tauto
   | ii y => use y;tauto
