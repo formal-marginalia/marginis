@@ -82,7 +82,7 @@ lemma infiniteA_Dow {n:ℕ} : Infinite (A_Dow n) := by
   constructor
   . unfold A_Dow
     have : 0 < 2^n*(2*a+1) := Fin.pos 0
-    refine Set.mem_def.mpr ?h.left.a
+    show padicValNat 2 (2 ^ n * (2 * a + 1)) = n
     have := @multiplicity_eq_of_dvd_of_not_dvd ℕ _ 2  (2 ^ n * (2 * a + 1)) n
       (Nat.dvd_mul_right (2 ^ n) (2 * a + 1)) (by
         intro hc

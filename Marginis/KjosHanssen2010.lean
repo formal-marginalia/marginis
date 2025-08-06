@@ -128,9 +128,9 @@ calc
         rw [this]
         exact Ne.symm (NeZero.ne' 4)
 
-      refine Real.rpow_add_one ?h.hx 3;
-      tauto
-      linarith;
+      norm_num
+      linarith
+      linarith
       have : (3:ℝ) + 1 = 4 := by exact three_add_one_eq_four
       rw [this]
       exact Ne.symm (NeZero.ne' 4)

@@ -509,7 +509,7 @@ theorem diag_fun_inj : diag_fun.Injective := by {
   rw [Nat.mul_add 2 (∑ x ∈ Finset.range (b.1 + b.2 + 1), x) b.2, infant_Gauss (b.1+b.2)] at h
   --wish for WLOG
   have hab : ((a.1+a.2) ≥ (b.1+b.2) ∨ ((b.1+b.2) > (a.1+a.2))) := by
-    exact le_or_lt (b.1 + b.2) (a.1 + a.2)
+    exact le_or_gt (b.1 + b.2) (a.1 + a.2)
   cases' hab with ha hb
   have ha2 :(a.1+a.2)*(a.1+a.2+1) ≥ (b.1+b.2)*(b.1+b.2+1) := by
     apply (n_sq_add_n_monotone (b.1+b.2) (a.1+a.2)).mp

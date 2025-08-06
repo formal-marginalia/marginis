@@ -95,7 +95,7 @@ lemma Lemma_3 {x y x' y' : ℝ} (f : ℝ → ℝ) (Con : ConvexOn ℝ (Set.Icc (
     | inr less_than =>
       by_contra a
       push_neg at a
-      have h := LT.lt.lt_or_lt a ((f x' - f y) / (x' - y))
+      have h := LT.lt.gt_or_lt a ((f x' - f y) / (x' - y))
       cases h with
       | inl hl =>
         have hln := not_le_of_gt hl

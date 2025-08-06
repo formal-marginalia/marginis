@@ -141,10 +141,10 @@ def mytop (z : Fin 2): TopologicalSpace (Fin 2) :=
 def myequiv := @Equiv.mk (Fin 2) (Fin 2) (λ x ↦ x + 1) ((λ x ↦ x + 1))
   (by
     refine Function.leftInverse_iff_comp.mpr ?_
-    simp only [Fin.isValue, comp_add_right, CharTwo.add_self_eq_zero, add_zero];rfl
+    simp only [Fin.isValue, comp_add_right];ext i;fin_cases i <;> rfl
   ) (by
     refine Function.rightInverse_iff_comp.mpr ?_
-    simp only [Fin.isValue, comp_add_right, CharTwo.add_self_eq_zero, add_zero];rfl
+    simp only [Fin.isValue, comp_add_right];ext i;fin_cases i <;> rfl
   )
 
 def myhomeo := @Homeomorph.mk (Fin 2) (Fin 2) (mytop 0) (mytop 1) myequiv (by

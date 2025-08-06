@@ -266,7 +266,7 @@ theorem emp_min {m : mon} : ∀ (a : @𝓓 m), (h : a ≤ ⊥) →  a = ⊥ := b
   intro A ⟨f,hf⟩
 
   unfold 𝓓 𝓓setoid m_equivalent m_reducible at *
-  simp_all only [Quotient.eq]
+  simp_all only
   apply Quot.sound
   have : A = fun _ => false := by ext x; exact hf.2 x
   constructor
@@ -279,7 +279,7 @@ theorem univ_min {m : mon} : ∀ (a : @𝓓 m), (h : a ≤ ⊤) →  a = ⊤ := 
   apply Quotient.ind
   intro A ⟨f,hf⟩
   unfold 𝓓 𝓓setoid m_equivalent m_reducible at *
-  simp_all only [Quotient.eq]
+  simp_all only
   apply Quot.sound
   constructor
   use f
@@ -711,7 +711,7 @@ theorem botSwap_is_induced {m : monₘ} : induced (@botSwap m.tomon₁.tomon) :=
     (⟦s A⟧ : @𝓓 m') = (⟦s B⟧ : @𝓓 m') := by
     intro A B hAB
     specialize h A B hAB
-    simp_all only [Quotient.eq, f, t]
+    simp_all only [Quotient.eq]
     exact h
   use fun A => ite (A = f) t <| ite (A = t) f A, h
   apply funext
@@ -740,7 +740,7 @@ theorem botSwap_is_induced {m : monₘ} : induced (@botSwap m.tomon₁.tomon) :=
     have g₃ : A ≠ f := by
       contrapose! g₀
       simp_all only
-    simp_all only [↓reduceIte, Quotient.eq, implies_true, ne_eq]
+    simp_all only [↓reduceIte, ne_eq]
     exact Quotient.eq''.mp rfl
 
 
@@ -976,7 +976,7 @@ theorem botSwapIsAuto {m : monₘ} : (@automorphism (@𝓓 m.tomon)) botSwap :=
 
 /-- In 𝓓ₘ, the degree of ∅ is less than 0. -/
 lemma emp_lt_zero {m : monₘ} : ⊥ < (0 : @𝓓 m.tomon) := by
-  refine lt_of_le_not_le ?_ ?_
+  refine lt_of_le_not_ge ?_ ?_
   · use fun _ => 1
     simp only [one_ne_zero, ↓reduceIte, implies_true, and_true]
     exact m.const 1

@@ -20,7 +20,7 @@ def powersetUniv X := 𝒫 (Set.univ : Set X)
 
 example : setSetUniv X = powersetUniv X := by
   unfold setSetUniv powersetUniv
-  simp only [Set.setOf_true, Set.powerset_univ]
+  simp only [Set.powerset_univ]
 
 example [Fintype X] : setSetFin X = setSetUniv X := by
   ext x

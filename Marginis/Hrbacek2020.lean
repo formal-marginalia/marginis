@@ -102,7 +102,9 @@ lemma dvd_helper' {a b : ℕ} (ha : b ∣ a) (h_b : b > 1):
     simp
     by_cases Hab : a = b
     . rw [Hab] at hk
-      have : k = 1 := (Nat.mul_right_eq_self_iff hb).mp (id (Eq.symm hk))
+      have : k = 1 := by
+        have h₁ : b ≠ 0 := by linarith
+        exact (Nat.mul_eq_left h₁).mp hk.symm
       subst this;simp;tauto
     . have hk₀: k ≠ 0 := by intro hc;subst hc;simp at hk;tauto
       have hk₁: k ≠ 1 := by intro hc;subst hc;simp at hk;tauto
@@ -230,9 +232,7 @@ def s : ℕ → ℕ → ℤ
 
 --Lemma 3.
 lemma anchor (p m n : ℕ) (hp : Nat.Prime p) (hmn : m < n) : s p n ≡ s p m [ZMOD p^m] := by
-  have : p = 2 ∨ p > 2 := by
-    refine LE.le.eq_or_gt ?_
-    exact Nat.Prime.two_le hp
+  have : p = 2 ∨ p > 2 := LE.le.eq_or_lt' <| Nat.Prime.two_le hp
   rcases this with H|H
   simp only [s]
   split_ifs with h1
@@ -404,7 +404,7 @@ lemma CWeak (x y : ℤ) (p : ℕ) (hp : p.Prime) (hpx : p ∣ a x) (hpy : p ∣ 
           ring_nf at H1
           subst H2
           simp_all only [pow_zero, ge_iff_le, nonpos_iff_eq_zero, one_ne_zero, not_false_eq_true, Nat.dvd_one,
-            isUnit_iff_eq_one, IsUnit.dvd, Nat.cast_one, one_pow, le_add_iff_nonneg_left, zero_le]
+            isUnit_iff_eq_one, IsUnit.dvd, Nat.cast_one, one_pow]
           subst H1
           have fwd : False := Nat.prime_one_false hp
           clear hp
@@ -431,7 +431,7 @@ lemma CWeak (x y : ℤ) (p : ℕ) (hp : p.Prime) (hpx : p ∣ a x) (hpy : p ∣ 
           ring_nf at H1
           subst H2
           simp_all only [pow_zero, ge_iff_le, nonpos_iff_eq_zero, one_ne_zero, not_false_eq_true, Nat.dvd_one,
-            isUnit_iff_eq_one, IsUnit.dvd, Nat.cast_one, one_pow, le_add_iff_nonneg_left, zero_le]
+            isUnit_iff_eq_one, IsUnit.dvd, Nat.cast_one, one_pow]
           subst H1
           have fwd : False := Nat.prime_one_false hp
           clear hp

@@ -135,7 +135,7 @@ lemma sup_edist_lower_bound' (S : Set (ℕ → Bool)) (t f : ℕ → Bool)
 
 lemma sup_dist_lower_bound : 1 ≤ (⨆ x ∈ Set.univ, ⨆ y ∈ Set.univ, d x y) := by
   rw [dist_tf]
-  simp only [Set.mem_univ, ciSup_unique, ge_iff_le]
+  simp only [Set.mem_univ, ciSup_unique]
   have Q₀ : d tr fa ≤ F tr := by
       refine (Real.le_sSup_iff ?h ?h').mpr ?_
       . exists 1; unfold upperBounds; simp; apply dist_bound

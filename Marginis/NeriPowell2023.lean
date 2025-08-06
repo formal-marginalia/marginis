@@ -74,7 +74,9 @@ lemma cToZero (c : ℝ) : 0 ≤ c ∧ c < 1 → ∀ ε > 0, ∃ N : ℕ, ∀ k :
       intro k
       intro hk
       have cLtEps :  (c < ε) := by
-        have splitEps : (ε = 1 ∨ 1 < ε) := by exact LE.le.eq_or_gt simpEps
+        have splitEps : (ε = 1 ∨ 1 < ε) := by
+          have := LE.le.eq_or_lt simpEps
+          tauto
         cases splitEps with
         | inl tacOne =>
           have cltone : (c < 1) := h.2

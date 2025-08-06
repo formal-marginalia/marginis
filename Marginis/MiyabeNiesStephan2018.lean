@@ -27,7 +27,6 @@ However, if we use Etienne Marion's KolmogorovExtension4 library
 things work out well.
  -/
 
-set_option maxHeartbeats 2000000
 
 lemma tsum_geometric_two_succ : ∑' (n : ℕ), ((1:ℝ) / 2 ^ n.succ)  = 1 := by
         nth_rewrite 2 [← tsum_geometric_two' 1]
@@ -92,17 +91,17 @@ lemma real_of_cantor_noninjective :
             ring
           exact Eq.trans h₀ h₁.symm
 
-lemma because_real_of_cantor_not_injective : CantorLebesgueMeasure₀ Set.univ = 0 := by
-  unfold CantorLebesgueMeasure₀
-  unfold MeasureTheory.Measure.comap
-  split_ifs with H
-  . simp
-    exfalso
-    let Q := H.1 real_of_cantor_noninjective
-    exact halfplus_ne_halfminus Q.symm
-  . contrapose H
-    simp
-    simp at H
+-- lemma because_real_of_cantor_not_injective : CantorLebesgueMeasure₀ Set.univ = 0 := by
+--   unfold CantorLebesgueMeasure₀
+--   unfold MeasureTheory.Measure.comap
+--   split_ifs with H
+--   . simp
+--     exfalso
+--     let Q := H.1 real_of_cantor_noninjective
+--     exact halfplus_ne_halfminus Q.symm
+--   . contrapose H
+--     simp
+--     simp at H
 
 open Classical
 
@@ -132,7 +131,7 @@ noncomputable def β' : MeasureTheory.ProbabilityMeasure Bool := {
 }
 
 
-noncomputable def β'measure (p : ENNReal) (hp : p ≤ 1) : MeasureTheory.ProbabilityMeasure Bool := {
+noncomputable def β'measure (p : NNReal) (hp : p ≤ 1) : MeasureTheory.ProbabilityMeasure Bool := {
   val := (@PMF.bernoulli p hp).toMeasure
   property := PMF.toMeasure.isProbabilityMeasure _
 }
@@ -154,22 +153,20 @@ lemma fairValue (b : Bool) : fairCoin b = 1/2 := rfl
 
 lemma fairValue'' (b : Bool) : fairCoin'' b = 1/2 := by
   unfold fairCoin''
-  simp
+  cases b <;> simp
 
-lemma bernoulliValueTrue'' (p : ENNReal) (hp : p ≤ 1) :
+lemma bernoulliValueTrue'' (p : NNReal) (hp : p ≤ 1) :
     PMF.bernoulli p hp true = p := rfl
 
-lemma bernoulliValueFalse'' (p : ENNReal) (hp : p ≤ 1) :
+lemma bernoulliValueFalse'' (p : NNReal) (hp : p ≤ 1) :
     PMF.bernoulli p hp false = 1 - p := rfl
 
-lemma bernoulliSingletonTrue'' (p : ENNReal) (hp : p ≤ 1) :
+lemma bernoulliSingletonTrue'' (p : NNReal) (hp : p ≤ 1) :
     β'measure p hp {true} = p := by
   unfold β'measure
   simp
-  refine ENNReal.coe_toNNReal ?_
-  aesop
 
-lemma bernoulliSingletonFalse'' (p : ENNReal) (hp : p ≤ 1) :
+lemma bernoulliSingletonFalse'' (p : NNReal) (hp : p ≤ 1) :
     β'measure p hp {false} = 1-p := by
   unfold β'measure
   simp
@@ -203,7 +200,7 @@ example (μ : MeasureTheory.ProbabilityMeasure Bool) : MeasureTheory.Measure Boo
     exact μ.toMeasure
 
 /-- The Bernoulli measure with parameter `p`. -/
-noncomputable def μ_bernoulli (p : ENNReal) (hp : p ≤ 1) :=
+noncomputable def μ_bernoulli (p : NNReal) (hp : p ≤ 1) :=
   @MeasureTheory.Measure.infinitePi ℕ (fun _ => Bool)
     (fun _ => Bool.instMeasurableSpace)
         (fun _ => (@β'measure p hp).toMeasure)
@@ -229,13 +226,13 @@ noncomputable def μ_bernoulli (p : ENNReal) (hp : p ≤ 1) :=
 
 
 
-instance (p : ENNReal) (hp : p ≤ 1) :
+instance (p : NNReal) (hp : p ≤ 1) :
     MeasureTheory.IsProbabilityMeasure <|μ_bernoulli p hp := by
   refine MeasureTheory.isProbabilityMeasure_iff.mpr ?_
   unfold μ_bernoulli
   exact MeasureTheory.measure_univ
 
-lemma bernoulliUniv'' (p : ENNReal) (hp : p ≤ 1) :
+lemma bernoulliUniv'' (p : NNReal) (hp : p ≤ 1) :
     μ_bernoulli p hp Set.univ = 1 := MeasureTheory.measure_univ
 
 -- noncomputable def μFair := @MeasureTheory.productMeasure Nat (fun _ => Bool)

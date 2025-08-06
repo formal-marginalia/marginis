@@ -192,7 +192,7 @@ private theorem encode_ofNatCode : ∀ n, encodeCode (ofNatCode n) = n
     conv_rhs => rw [← Nat.bit_decomp n, ← Nat.bit_decomp n.div2]
     simp only [ofNatCode.eq_6]
     cases n.bodd <;> cases n.div2.bodd <;>
-      simp [m, encodeCode, ofNatCode, IH, IH1, IH2, Nat.bit_val]
+      simp [m, encodeCode, IH, IH1, IH2, Nat.bit_val]
 
 instance instDenumerable : Denumerable Code :=
   mk'
@@ -471,16 +471,16 @@ infix:70 " ⊕ " => join
 -- theorem countableAut : Countable {π : 𝓓ₜ → 𝓓ₜ | automorphism π} := sorry
 
 
-structure monₜₜ extends monₘ where
-  ttrefl : func fun n ↦
-    Encodable.encode
-      ((Denumerable.ofNat ((k : ℕ) × (Fin k.succ → Bool)) n).snd
-        ↑(Denumerable.ofNat ((k : ℕ) × (Fin k.succ → Bool)) n).fst)
+-- structure monₜₜ extends monₘ where
+--   ttrefl : func fun n ↦
+--     Encodable.encode
+--       ((Denumerable.ofNat ((k : ℕ) × (Fin k.succ → Bool)) n).snd
+--         ↑(Denumerable.ofNat ((k : ℕ) × (Fin k.succ → Bool)) n).fst)
 
-def tt_reducible (A B : ℕ → Bool) := ∃ u : ℕ → ℕ, (Computable u ∧ Monotone u) ∧
-  ∃ Φ : (n : ℕ) → (Fin (u n) → Bool) → Bool,
-  Computable (fun pair : (n : ℕ) × (Fin (u n) → Bool) => Φ pair.1 pair.2) ∧
-    ∀ x, A x = Φ x (fun i => B i)
+-- def tt_reducible (A B : ℕ → Bool) := ∃ u : ℕ → ℕ, (Computable u ∧ Monotone u) ∧
+--   ∃ Φ : (n : ℕ) → (Fin (u n) → Bool) → Bool,
+--   Computable (fun pair : (n : ℕ) × (Fin (u n) → Bool) => Φ pair.1 pair.2) ∧
+--     ∀ x, A x = Φ x (fun i => B i)
 
 -- def tt_reducible_mon {m : monₜₜ} (A B : ℕ → Bool) := ∃ u : ℕ → ℕ, (Computable u ∧ Monotone u) ∧
 --   ∃ Φ : (n : ℕ) → (Fin (u n) → Bool) → Bool,
